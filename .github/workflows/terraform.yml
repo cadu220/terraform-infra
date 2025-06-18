@@ -45,7 +45,7 @@ jobs:
 #        - name: Read destroy configuration
 #          id: read-destroy-config
 #          run: |
-#            DESTROY="$(jq -r '.${{ inputs.environment }}' ./infra/destroy_config.json)"
+#            DESTROY="$(jq -r '.${{ inputs.enviroment }}' ./infra/destroy_config.json)"
 #            echo "destroy=$(echo $DESTROY)" >> $GITHUB_OUTPUT
 
         - name: Terraform Init
@@ -63,19 +63,19 @@ jobs:
 #          if: steps.read-destroy-config.outputs.destroy == 'true'
 #          id: terraform-destroy
 #          run: cd infra &&
-#            terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
-#            terraform destroy -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -auto-approve
+#            terraform workspace select ${{ inputs.enviroment }} || terraform workspace new ${{ inputs.enviroment }} &&
+#            terraform destroy -var-file="./envs/${{ inputs.enviroment }}/terraform.tfvars" -auto-approve
 
         - name: Terraform Plan
           if: steps.read-destroy-config.outputs.destroy != 'true'
           id: terraform-plan
           run: cd infra &&
-            terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
-            terraform plan -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -out="${{ inputs.environment }}.plan"
+            terraform workspace select ${{ inputs.enviroment }} || terraform workspace new ${{ inputs.enviroment }} &&
+            terraform plan -var-file="./envs/${{ inputs.enviroment }}/terraform.tfvars" -out="${{ inputs.enviroment }}.plan"
 
         - name: Terraform Apply
           if: steps.read-destroy-config.outputs.destroy != 'true'
           id: terraform-apply
           run: cd infra &&
-            terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
-            terraform apply "${{ inputs.environment }}.plan"
+            terraform workspace select ${{ inputs.enviroment }} || terraform workspace new ${{ inputs.enviroment }} &&
+            terraform apply "${{ inputs.enviroment }}.plan"
